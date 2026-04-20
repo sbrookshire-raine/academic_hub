@@ -3,7 +3,16 @@ FVCC Academic Advising Hub
 Landing page for the FVCC Course Planner multi-page application.
 """
 
+import subprocess
+import sys
+from pathlib import Path
+
 import streamlit as st
+
+# Auto-seed demo data on first run (e.g., fresh Streamlit Cloud deploy)
+_db_path = Path(__file__).parent / "data" / "user_progress.db"
+if not _db_path.exists():
+    subprocess.run([sys.executable, str(Path(__file__).parent / "tools" / "seed_demo.py")], check=False)
 
 st.set_page_config(
     page_title="FVCC Academic Advising",
