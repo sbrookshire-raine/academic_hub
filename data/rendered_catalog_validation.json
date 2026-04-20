@@ -1,0 +1,36 @@
+{
+  "summary": {
+    "programs_checked": 60,
+    "raw_rendered_exact_matches": 59,
+    "generic_text_only_differences": 59,
+    "raw_rendered_mismatches": 1
+  },
+  "mismatches": [
+    {
+      "name": "Electrical Technology, CAS",
+      "catalog_url": "https://catalog.fvcc.edu/preview_program.php?catoid=15&poid=2718&returnto=1110",
+      "stored_total_credits": 32,
+      "rendered_total_credits": 32,
+      "raw_course_count": 12,
+      "rendered_course_count": 11,
+      "raw_generic_count": 3,
+      "rendered_generic_count": 0,
+      "raw_semester_total_count": 2,
+      "rendered_semester_total_count": 2,
+      "extra_in_rendered_courses": [],
+      "missing_in_rendered_courses": [
+        "ETEC 100 - Introduction to Mechatronics"
+      ],
+      "extra_in_rendered_generics": [],
+      "missing_in_rendered_generics": [
+        "Credit(s): 2",
+        "Credit(s): 3",
+        "Credit(s): 4"
+      ],
+      "extra_in_rendered_totals": [],
+      "missing_in_rendered_totals": [],
+      "generic_text_diff_only": false,
+      "raw_matches_rendered": false
+    }
+  ]
+}

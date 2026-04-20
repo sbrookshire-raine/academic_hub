@@ -1,0 +1,1485 @@
+{
+  "metadata": {
+    "source": "https://www.fvcc.edu/admissions-financial-aid/tuition-fees/tuition-fees-2025-2026",
+    "academic_year": "2025-2026",
+    "note": "Tuition is per credit. Fees are mandatory and cannot be waived.",
+    "scraped_date": "2026-04-20"
+  },
+  "summary": {
+    "Flathead County Campus - Flathead County Resident": {
+      "tuition_per_credit": 152.45,
+      "total_per_credit": 205.16,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 52.71
+    },
+    "Flathead County Campus - Montana Resident": {
+      "tuition_per_credit": 208.71,
+      "total_per_credit": 261.42,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 261.42
+    },
+    "Flathead County Campus - Out-of-State": {
+      "tuition_per_credit": 442.02,
+      "total_per_credit": 494.73,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 494.73
+    },
+    "Lincoln County Campus - Flathead County Resident": {
+      "tuition_per_credit": 152.45,
+      "total_per_credit": 205.16,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 52.71
+    },
+    "Lincoln County Campus - Montana Resident": {
+      "tuition_per_credit": 208.71,
+      "total_per_credit": 261.42,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 261.42
+    },
+    "Lincoln County Campus - Out-of-State": {
+      "tuition_per_credit": 442.02,
+      "total_per_credit": 494.73,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 494.73
+    },
+    "Running Start - In-State": {
+      "tuition_per_credit": 76.23,
+      "total_per_credit": 76.23,
+      "fees_per_credit": 0.0
+    },
+    "Running Start - Out-of-State": {
+      "tuition_per_credit": 221.01,
+      "total_per_credit": 273.72,
+      "fees_per_credit": 52.71
+    },
+    "Western Undergraduate Exchange (WUE) - WUE": {
+      "tuition_per_credit": 292.41,
+      "total_per_credit": 345.12,
+      "fees_per_credit": 52.71,
+      "age_65_plus_per_credit": 345.12
+    }
+  },
+  "plain_english": {
+    "bottom_line": "Flathead County residents pay $205.16/credit. Other Montana residents pay $261.42/credit. Out-of-state pays $494.73/credit. WUE students (western states) pay $345.12/credit.",
+    "typical_semester_15_credits": {
+      "flathead_county": 3077.4,
+      "montana_resident": 3921.3,
+      "out_of_state": 7420.95,
+      "wue": 5176.8
+    },
+    "typical_year_30_credits": {
+      "flathead_county": 6154.8,
+      "montana_resident": 7842.6,
+      "out_of_state": 14841.9,
+      "wue": 10353.6
+    },
+    "what_the_fees_are": {
+      "infrastructure_fee": "Building maintenance and campus facilities",
+      "technology_fee": "Computer labs, WiFi, online systems",
+      "activity_fee": "Student clubs, events, student government",
+      "equipment_fee": "Lab and classroom equipment",
+      "health_center_fee": "On-campus health clinic (only charged at 7+ credits)"
+    },
+    "things_they_dont_tell_you_upfront": [
+      "Some classes have extra lab fees on top of tuition — not listed on the main fee schedule.",
+      "Payment is due at registration. If you can't pay in full, a deferred plan kicks in automatically — but you'll get hit with a $25 late fee if you miss an installment.",
+      "A bounced check costs you $30.",
+      "If you don't pay, they block your registration, hold your transcripts, and can send you to Montana Dept of Revenue collections.",
+      "Age 65+? Flathead County residents pay massively reduced rates ($52.71/credit vs $205.16)."
+    ]
+  },
+  "full_tables": [
+    {
+      "campus": "Flathead County Campus",
+      "residency": "Flathead County Resident",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 76.23,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 102.58,
+          "age_65_plus": 26.36
+        },
+        {
+          "credits": 1.0,
+          "tuition": 152.45,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 205.16,
+          "age_65_plus": 52.71
+        },
+        {
+          "credits": 2.0,
+          "tuition": 304.9,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 410.32,
+          "age_65_plus": 105.42
+        },
+        {
+          "credits": 3.0,
+          "tuition": 457.35,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 615.48,
+          "age_65_plus": 158.13
+        },
+        {
+          "credits": 4.0,
+          "tuition": 609.8,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 820.64,
+          "age_65_plus": 210.84
+        },
+        {
+          "credits": 5.0,
+          "tuition": 762.25,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 1025.8,
+          "age_65_plus": 263.55
+        },
+        {
+          "credits": 6.0,
+          "tuition": 914.7,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 50.0,
+          "total": 1280.96,
+          "age_65_plus": 316.26
+        },
+        {
+          "credits": 7.0,
+          "tuition": 1067.15,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 50.0,
+          "total": 1486.12,
+          "age_65_plus": 368.97
+        },
+        {
+          "credits": 8.0,
+          "tuition": 1219.6,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 50.0,
+          "total": 1691.28,
+          "age_65_plus": 421.68
+        },
+        {
+          "credits": 9.0,
+          "tuition": 1372.05,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 50.0,
+          "total": 1896.44,
+          "age_65_plus": 474.39
+        },
+        {
+          "credits": 10.0,
+          "tuition": 1524.5,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 50.0,
+          "total": 2101.6,
+          "age_65_plus": 527.1
+        },
+        {
+          "credits": 11.0,
+          "tuition": 1676.95,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 50.0,
+          "total": 2306.76,
+          "age_65_plus": 579.81
+        },
+        {
+          "credits": 12.0,
+          "tuition": 1829.4,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 50.0,
+          "total": 2511.92,
+          "age_65_plus": 632.52
+        },
+        {
+          "credits": 13.0,
+          "tuition": 1981.85,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 50.0,
+          "total": 2717.08,
+          "age_65_plus": 685.23
+        }
+      ]
+    },
+    {
+      "campus": "Flathead County Campus",
+      "residency": "Montana Resident",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 104.36,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 130.71,
+          "age_65_plus": 130.71
+        },
+        {
+          "credits": 1.0,
+          "tuition": 208.71,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 261.42,
+          "age_65_plus": 261.42
+        },
+        {
+          "credits": 2.0,
+          "tuition": 417.42,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 522.84,
+          "age_65_plus": 522.84
+        },
+        {
+          "credits": 3.0,
+          "tuition": 626.13,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 784.26,
+          "age_65_plus": 784.26
+        },
+        {
+          "credits": 4.0,
+          "tuition": 834.84,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 1045.68,
+          "age_65_plus": 1045.68
+        },
+        {
+          "credits": 5.0,
+          "tuition": 1043.55,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 1307.1,
+          "age_65_plus": 1307.1
+        },
+        {
+          "credits": 6.0,
+          "tuition": 1252.26,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 50.0,
+          "total": 1618.52,
+          "age_65_plus": 1568.52
+        },
+        {
+          "credits": 7.0,
+          "tuition": 1460.97,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 50.0,
+          "total": 1879.94,
+          "age_65_plus": 1829.94
+        },
+        {
+          "credits": 8.0,
+          "tuition": 1669.68,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 50.0,
+          "total": 2141.36,
+          "age_65_plus": 2091.36
+        },
+        {
+          "credits": 9.0,
+          "tuition": 1878.39,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 50.0,
+          "total": 2402.78,
+          "age_65_plus": 2352.78
+        },
+        {
+          "credits": 10.0,
+          "tuition": 2087.1,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 50.0,
+          "total": 2664.2,
+          "age_65_plus": 2614.2
+        },
+        {
+          "credits": 11.0,
+          "tuition": 2295.81,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 50.0,
+          "total": 2925.62,
+          "age_65_plus": 2875.62
+        },
+        {
+          "credits": 12.0,
+          "tuition": 2504.52,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 50.0,
+          "total": 3187.04,
+          "age_65_plus": 3137.04
+        },
+        {
+          "credits": 13.0,
+          "tuition": 2713.23,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 50.0,
+          "total": 3448.46,
+          "age_65_plus": 3398.46
+        }
+      ]
+    },
+    {
+      "campus": "Flathead County Campus",
+      "residency": "Out-of-State",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 221.01,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 247.37,
+          "age_65_plus": 247.37
+        },
+        {
+          "credits": 1.0,
+          "tuition": 442.02,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 494.73,
+          "age_65_plus": 494.73
+        },
+        {
+          "credits": 2.0,
+          "tuition": 884.04,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 989.46,
+          "age_65_plus": 989.46
+        },
+        {
+          "credits": 3.0,
+          "tuition": 1326.06,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 1484.19,
+          "age_65_plus": 1484.19
+        },
+        {
+          "credits": 4.0,
+          "tuition": 1768.08,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 1978.92,
+          "age_65_plus": 1978.92
+        },
+        {
+          "credits": 5.0,
+          "tuition": 2210.1,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 2473.65,
+          "age_65_plus": 2473.65
+        },
+        {
+          "credits": 6.0,
+          "tuition": 2652.12,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 50.0,
+          "total": 3018.38,
+          "age_65_plus": 2968.38
+        },
+        {
+          "credits": 7.0,
+          "tuition": 3094.14,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 50.0,
+          "total": 3513.11,
+          "age_65_plus": 3463.11
+        },
+        {
+          "credits": 8.0,
+          "tuition": 3536.16,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 50.0,
+          "total": 4007.84,
+          "age_65_plus": 3957.84
+        },
+        {
+          "credits": 9.0,
+          "tuition": 3978.18,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 50.0,
+          "total": 4502.57,
+          "age_65_plus": 4452.57
+        },
+        {
+          "credits": 10.0,
+          "tuition": 4420.2,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 50.0,
+          "total": 4997.3,
+          "age_65_plus": 4947.3
+        },
+        {
+          "credits": 11.0,
+          "tuition": 4862.22,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 50.0,
+          "total": 5492.03,
+          "age_65_plus": 5442.03
+        },
+        {
+          "credits": 12.0,
+          "tuition": 5304.24,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 50.0,
+          "total": 5986.76,
+          "age_65_plus": 5936.76
+        },
+        {
+          "credits": 13.0,
+          "tuition": 5746.26,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 50.0,
+          "total": 6481.49,
+          "age_65_plus": 6431.49
+        }
+      ]
+    },
+    {
+      "campus": "Lincoln County Campus",
+      "residency": "Flathead County Resident",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 76.23,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 102.58,
+          "age_65_plus": 26.36
+        },
+        {
+          "credits": 1.0,
+          "tuition": 152.45,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 205.16,
+          "age_65_plus": 52.71
+        },
+        {
+          "credits": 2.0,
+          "tuition": 304.9,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 410.32,
+          "age_65_plus": 105.42
+        },
+        {
+          "credits": 3.0,
+          "tuition": 457.35,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 615.48,
+          "age_65_plus": 158.13
+        },
+        {
+          "credits": 4.0,
+          "tuition": 609.8,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 820.64,
+          "age_65_plus": 210.84
+        },
+        {
+          "credits": 5.0,
+          "tuition": 762.25,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 1025.8,
+          "age_65_plus": 263.55
+        },
+        {
+          "credits": 6.0,
+          "tuition": 914.7,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 0.0,
+          "total": 1230.96,
+          "age_65_plus": 316.26
+        },
+        {
+          "credits": 7.0,
+          "tuition": 1067.15,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 0.0,
+          "total": 1436.12,
+          "age_65_plus": 368.97
+        },
+        {
+          "credits": 8.0,
+          "tuition": 1219.6,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 0.0,
+          "total": 1641.28,
+          "age_65_plus": 421.68
+        },
+        {
+          "credits": 9.0,
+          "tuition": 1372.05,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 0.0,
+          "total": 1846.44,
+          "age_65_plus": 474.39
+        },
+        {
+          "credits": 10.0,
+          "tuition": 1524.5,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 0.0,
+          "total": 2051.6,
+          "age_65_plus": 527.1
+        },
+        {
+          "credits": 11.0,
+          "tuition": 1676.95,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 0.0,
+          "total": 2256.76,
+          "age_65_plus": 579.81
+        },
+        {
+          "credits": 12.0,
+          "tuition": 1829.4,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 0.0,
+          "total": 2461.92,
+          "age_65_plus": 632.52
+        },
+        {
+          "credits": 13.0,
+          "tuition": 1981.85,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 0.0,
+          "total": 2667.08,
+          "age_65_plus": 685.23
+        }
+      ]
+    },
+    {
+      "campus": "Lincoln County Campus",
+      "residency": "Montana Resident",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 104.36,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 130.71,
+          "age_65_plus": 130.71
+        },
+        {
+          "credits": 1.0,
+          "tuition": 208.71,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 261.42,
+          "age_65_plus": 261.42
+        },
+        {
+          "credits": 2.0,
+          "tuition": 417.42,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 522.84,
+          "age_65_plus": 522.84
+        },
+        {
+          "credits": 3.0,
+          "tuition": 626.13,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 784.26,
+          "age_65_plus": 784.26
+        },
+        {
+          "credits": 4.0,
+          "tuition": 834.84,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 1045.68,
+          "age_65_plus": 1045.68
+        },
+        {
+          "credits": 5.0,
+          "tuition": 1043.55,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 1307.1,
+          "age_65_plus": 1307.1
+        },
+        {
+          "credits": 6.0,
+          "tuition": 1252.26,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 0.0,
+          "total": 1568.52,
+          "age_65_plus": 1568.52
+        },
+        {
+          "credits": 7.0,
+          "tuition": 1460.97,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 0.0,
+          "total": 1829.94,
+          "age_65_plus": 1829.94
+        },
+        {
+          "credits": 8.0,
+          "tuition": 1669.68,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 0.0,
+          "total": 2091.36,
+          "age_65_plus": 2091.36
+        },
+        {
+          "credits": 9.0,
+          "tuition": 1878.39,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 0.0,
+          "total": 2352.78,
+          "age_65_plus": 2352.78
+        },
+        {
+          "credits": 10.0,
+          "tuition": 2087.1,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 0.0,
+          "total": 2614.2,
+          "age_65_plus": 2614.2
+        },
+        {
+          "credits": 11.0,
+          "tuition": 2295.81,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 0.0,
+          "total": 2875.62,
+          "age_65_plus": 2875.62
+        },
+        {
+          "credits": 12.0,
+          "tuition": 2504.52,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 0.0,
+          "total": 3137.04,
+          "age_65_plus": 3137.04
+        },
+        {
+          "credits": 13.0,
+          "tuition": 2713.23,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 0.0,
+          "total": 3398.46,
+          "age_65_plus": 3398.46
+        }
+      ]
+    },
+    {
+      "campus": "Lincoln County Campus",
+      "residency": "Out-of-State",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 221.01,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 247.37,
+          "age_65_plus": 247.37
+        },
+        {
+          "credits": 1.0,
+          "tuition": 442.02,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 494.73,
+          "age_65_plus": 494.73
+        },
+        {
+          "credits": 2.0,
+          "tuition": 884.04,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 989.46,
+          "age_65_plus": 989.46
+        },
+        {
+          "credits": 3.0,
+          "tuition": 1326.06,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 1484.19,
+          "age_65_plus": 1484.19
+        },
+        {
+          "credits": 4.0,
+          "tuition": 1768.08,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 1978.92,
+          "age_65_plus": 1978.92
+        },
+        {
+          "credits": 5.0,
+          "tuition": 2210.1,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 2473.65,
+          "age_65_plus": 2473.65
+        },
+        {
+          "credits": 6.0,
+          "tuition": 2652.12,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 0.0,
+          "total": 2968.38,
+          "age_65_plus": 2968.38
+        },
+        {
+          "credits": 7.0,
+          "tuition": 3094.14,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 0.0,
+          "total": 3463.11,
+          "age_65_plus": 3463.11
+        },
+        {
+          "credits": 8.0,
+          "tuition": 3536.16,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 0.0,
+          "total": 3957.84,
+          "age_65_plus": 3957.84
+        },
+        {
+          "credits": 9.0,
+          "tuition": 3978.18,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 0.0,
+          "total": 4452.57,
+          "age_65_plus": 4452.57
+        },
+        {
+          "credits": 10.0,
+          "tuition": 4420.2,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 0.0,
+          "total": 4947.3,
+          "age_65_plus": 4947.3
+        },
+        {
+          "credits": 11.0,
+          "tuition": 4862.22,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 0.0,
+          "total": 5442.03,
+          "age_65_plus": 5442.03
+        },
+        {
+          "credits": 12.0,
+          "tuition": 5304.24,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 0.0,
+          "total": 5936.76,
+          "age_65_plus": 5936.76
+        },
+        {
+          "credits": 13.0,
+          "tuition": 5746.26,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 0.0,
+          "total": 6431.49,
+          "age_65_plus": 6431.49
+        }
+      ]
+    },
+    {
+      "campus": "Running Start",
+      "residency": "In-State",
+      "rates": [
+        {
+          "credits": 1.0,
+          "tuition": 76.23,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 76.23
+        },
+        {
+          "credits": 2.0,
+          "tuition": 152.46,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 152.46
+        },
+        {
+          "credits": 3.0,
+          "tuition": 228.69,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 228.69
+        },
+        {
+          "credits": 4.0,
+          "tuition": 304.92,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 304.92
+        },
+        {
+          "credits": 5.0,
+          "tuition": 381.15,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 381.15
+        },
+        {
+          "credits": 6.0,
+          "tuition": 457.38,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 457.38
+        },
+        {
+          "credits": 7.0,
+          "tuition": 533.61,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 533.61
+        },
+        {
+          "credits": 8.0,
+          "tuition": 609.84,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 609.84
+        },
+        {
+          "credits": 9.0,
+          "tuition": 686.07,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 686.07
+        },
+        {
+          "credits": 10.0,
+          "tuition": 762.3,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 762.3
+        },
+        {
+          "credits": 11.0,
+          "tuition": 838.53,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 838.53
+        },
+        {
+          "credits": 12.0,
+          "tuition": 914.76,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 914.76
+        },
+        {
+          "credits": 13.0,
+          "tuition": 990.99,
+          "infrastructure_fee": 0.0,
+          "technology_fee": 0.0,
+          "activity_fee": 0.0,
+          "equipment_fee": 0.0,
+          "health_center_fee": 0.0,
+          "total": 990.99
+        }
+      ]
+    },
+    {
+      "campus": "Running Start",
+      "residency": "Out-of-State",
+      "rates": [
+        {
+          "credits": 1.0,
+          "tuition": 221.01,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 273.72
+        },
+        {
+          "credits": 2.0,
+          "tuition": 442.02,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 547.44
+        },
+        {
+          "credits": 3.0,
+          "tuition": 663.03,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 821.16
+        },
+        {
+          "credits": 4.0,
+          "tuition": 884.04,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 1094.88
+        },
+        {
+          "credits": 5.0,
+          "tuition": 1105.05,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 1368.6
+        },
+        {
+          "credits": 6.0,
+          "tuition": 1326.06,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 0.0,
+          "total": 1642.32
+        },
+        {
+          "credits": 7.0,
+          "tuition": 1547.07,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 0.0,
+          "total": 1916.04
+        },
+        {
+          "credits": 8.0,
+          "tuition": 1768.08,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 0.0,
+          "total": 2189.76
+        },
+        {
+          "credits": 9.0,
+          "tuition": 1989.09,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 0.0,
+          "total": 2463.48
+        },
+        {
+          "credits": 10.0,
+          "tuition": 2210.1,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 0.0,
+          "total": 2737.2
+        },
+        {
+          "credits": 11.0,
+          "tuition": 2431.11,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 0.0,
+          "total": 3010.92
+        },
+        {
+          "credits": 12.0,
+          "tuition": 2652.12,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 0.0,
+          "total": 3284.64
+        },
+        {
+          "credits": 13.0,
+          "tuition": 2873.13,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 0.0,
+          "total": 3558.36
+        }
+      ]
+    },
+    {
+      "campus": "Western Undergraduate Exchange (WUE)",
+      "residency": "WUE",
+      "rates": [
+        {
+          "credits": 0.5,
+          "tuition": 146.21,
+          "infrastructure_fee": 12.74,
+          "technology_fee": 8.16,
+          "activity_fee": 1.38,
+          "equipment_fee": 4.08,
+          "health_center_fee": 0.0,
+          "total": 172.56,
+          "age_65_plus": 172.56
+        },
+        {
+          "credits": 1.0,
+          "tuition": 292.41,
+          "infrastructure_fee": 25.48,
+          "technology_fee": 16.32,
+          "activity_fee": 2.75,
+          "equipment_fee": 8.16,
+          "health_center_fee": 0.0,
+          "total": 345.12,
+          "age_65_plus": 345.12
+        },
+        {
+          "credits": 2.0,
+          "tuition": 584.82,
+          "infrastructure_fee": 50.96,
+          "technology_fee": 32.64,
+          "activity_fee": 5.5,
+          "equipment_fee": 16.32,
+          "health_center_fee": 0.0,
+          "total": 690.24,
+          "age_65_plus": 690.24
+        },
+        {
+          "credits": 3.0,
+          "tuition": 877.23,
+          "infrastructure_fee": 76.44,
+          "technology_fee": 48.96,
+          "activity_fee": 8.25,
+          "equipment_fee": 24.48,
+          "health_center_fee": 0.0,
+          "total": 1035.36,
+          "age_65_plus": 1035.36
+        },
+        {
+          "credits": 4.0,
+          "tuition": 1169.64,
+          "infrastructure_fee": 101.92,
+          "technology_fee": 65.28,
+          "activity_fee": 11.0,
+          "equipment_fee": 32.64,
+          "health_center_fee": 0.0,
+          "total": 1380.48,
+          "age_65_plus": 1380.48
+        },
+        {
+          "credits": 5.0,
+          "tuition": 1462.05,
+          "infrastructure_fee": 127.4,
+          "technology_fee": 81.6,
+          "activity_fee": 13.75,
+          "equipment_fee": 40.8,
+          "health_center_fee": 0.0,
+          "total": 1725.6,
+          "age_65_plus": 1725.6
+        },
+        {
+          "credits": 6.0,
+          "tuition": 1754.46,
+          "infrastructure_fee": 152.88,
+          "technology_fee": 97.92,
+          "activity_fee": 16.5,
+          "equipment_fee": 48.96,
+          "health_center_fee": 50.0,
+          "total": 2120.72,
+          "age_65_plus": 2070.72
+        },
+        {
+          "credits": 7.0,
+          "tuition": 2046.87,
+          "infrastructure_fee": 178.36,
+          "technology_fee": 114.24,
+          "activity_fee": 19.25,
+          "equipment_fee": 57.12,
+          "health_center_fee": 50.0,
+          "total": 2465.84,
+          "age_65_plus": 2415.84
+        },
+        {
+          "credits": 8.0,
+          "tuition": 2339.28,
+          "infrastructure_fee": 203.84,
+          "technology_fee": 130.56,
+          "activity_fee": 22.0,
+          "equipment_fee": 65.28,
+          "health_center_fee": 50.0,
+          "total": 2810.96,
+          "age_65_plus": 2760.96
+        },
+        {
+          "credits": 9.0,
+          "tuition": 2631.69,
+          "infrastructure_fee": 229.32,
+          "technology_fee": 146.88,
+          "activity_fee": 24.75,
+          "equipment_fee": 73.44,
+          "health_center_fee": 50.0,
+          "total": 3156.08,
+          "age_65_plus": 3106.08
+        },
+        {
+          "credits": 10.0,
+          "tuition": 2924.1,
+          "infrastructure_fee": 254.8,
+          "technology_fee": 163.2,
+          "activity_fee": 27.5,
+          "equipment_fee": 81.6,
+          "health_center_fee": 50.0,
+          "total": 3501.2,
+          "age_65_plus": 3451.2
+        },
+        {
+          "credits": 11.0,
+          "tuition": 3216.51,
+          "infrastructure_fee": 280.28,
+          "technology_fee": 179.52,
+          "activity_fee": 30.25,
+          "equipment_fee": 89.76,
+          "health_center_fee": 50.0,
+          "total": 3846.32,
+          "age_65_plus": 3796.32
+        },
+        {
+          "credits": 12.0,
+          "tuition": 3508.92,
+          "infrastructure_fee": 305.76,
+          "technology_fee": 195.84,
+          "activity_fee": 33.0,
+          "equipment_fee": 97.92,
+          "health_center_fee": 50.0,
+          "total": 4191.44,
+          "age_65_plus": 4141.44
+        },
+        {
+          "credits": 13.0,
+          "tuition": 3801.33,
+          "infrastructure_fee": 331.24,
+          "technology_fee": 212.16,
+          "activity_fee": 35.75,
+          "equipment_fee": 106.08,
+          "health_center_fee": 50.0,
+          "total": 4536.56,
+          "age_65_plus": 4486.56
+        }
+      ]
+    }
+  ]
+}
