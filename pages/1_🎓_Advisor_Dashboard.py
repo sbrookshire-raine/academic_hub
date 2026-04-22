@@ -706,46 +706,6 @@ with tab_courses:
         if placement_only:
             st.caption("Placement-equivalent eligibility codes: " + ", ".join(placement_only))
 
-        # Cross-program prereq display
-        if effective_completed_course_codes:
-            st.markdown("---")
-            st.subheader("🔗 What These Unlock in Other Programs")
-            st.caption("Completed classes that satisfy prerequisites in programs beyond this student's current one.")
-
-            cross_program_unlocks = {}
-            all_programs = pc.get("programs", [])
-            current_program_name = student.get("program_name", "")
-
-            for other_prog in all_programs:
-                if other_prog["name"] == current_program_name:
-                    continue
-                if not any(s["courses"] for s in other_prog["semesters"]):
-                    continue
-
-                for sem in other_prog["semesters"]:
-                    for course_entry in sem["courses"]:
-                        if isinstance(course_entry, list):
-                            course_entry = course_entry[0] if course_entry else {}
-                        other_code = course_entry.get("code", "")
-                        reqs = course_requirements.get(other_code, {})
-                        prereq_codes = reqs.get("prerequisite_codes", [])
-                        satisfied = [p for p in prereq_codes if p in effective_completed_course_codes]
-                        if satisfied:
-                            cross_program_unlocks.setdefault(other_prog["name"], []).append({
-                                "course": other_code,
-                                "title": course_entry.get("title", ""),
-                                "prereqs_met": satisfied,
-                            })
-
-            if cross_program_unlocks:
-                for prog_name, unlocked in sorted(cross_program_unlocks.items()):
-                    with st.expander(f"**{prog_name}** — {len(unlocked)} course(s) unlocked"):
-                        for u in unlocked:
-                            met = ", ".join(u["prereqs_met"])
-                            st.markdown(f"- **{u['course']}** — {u['title']} *(prereq met: {met})*")
-            else:
-                st.caption("No cross-program prerequisites are satisfied yet.")
-
         # Completion history table (editable terms)
         history_terms = sync_completed_slot_terms(student, new_completed)
         history_rows = completion_rows(new_completed, history_terms, completion_lookup, program_slots, saved_or_choices)
@@ -850,6 +810,46 @@ with tab_courses:
                 st.rerun()
         else:
             st.info("No transfer or manual courses recorded yet.")
+
+        # Cross-program prereq display (moved to bottom; collapsed unless needed)
+        if effective_completed_course_codes:
+            st.markdown("---")
+            with st.expander("🔗 What These Unlock in Other Programs (Optional)", expanded=False):
+                st.caption("Use this only when planning program changes or transfer pathways.")
+
+                cross_program_unlocks = {}
+                all_programs = pc.get("programs", [])
+                current_program_name = student.get("program_name", "")
+
+                for other_prog in all_programs:
+                    if other_prog["name"] == current_program_name:
+                        continue
+                    if not any(s["courses"] for s in other_prog["semesters"]):
+                        continue
+
+                    for sem in other_prog["semesters"]:
+                        for course_entry in sem["courses"]:
+                            if isinstance(course_entry, list):
+                                course_entry = course_entry[0] if course_entry else {}
+                            other_code = course_entry.get("code", "")
+                            reqs = course_requirements.get(other_code, {})
+                            prereq_codes = reqs.get("prerequisite_codes", [])
+                            satisfied = [p for p in prereq_codes if p in effective_completed_course_codes]
+                            if satisfied:
+                                cross_program_unlocks.setdefault(other_prog["name"], []).append({
+                                    "course": other_code,
+                                    "title": course_entry.get("title", ""),
+                                    "prereqs_met": satisfied,
+                                })
+
+                if cross_program_unlocks:
+                    for prog_name, unlocked in sorted(cross_program_unlocks.items()):
+                        with st.expander(f"**{prog_name}** — {len(unlocked)} course(s) unlocked"):
+                            for u in unlocked:
+                                met = ", ".join(u["prereqs_met"])
+                                st.markdown(f"- **{u['course']}** — {u['title']} *(prereq met: {met})*")
+                else:
+                    st.caption("No cross-program prerequisites are satisfied yet.")
 
 
 # ── Tab: Profile ─────────────────────────────────────────────────────────────
