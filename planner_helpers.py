@@ -86,6 +86,40 @@ def canonical_course_title(course_code: str, fallback_title: str, course_require
     return fallback_title
 
 
+def is_lcc_accessible_section(section: dict) -> bool:
+    """
+    LCC/Libby-friendly section rules:
+      - 80s section IDs (online async)
+      - 90s section IDs or IDs ending in D (remote/zoom)
+      - 60s section IDs (local Libby campus)
+      - section IDs 22 or 23 (online/remote with local proctoring)
+    """
+    sid = str(section.get("section_id", "")).strip().upper()
+    if not sid:
+        return False
+    if sid.endswith("D"):
+        return True
+    if sid.isdigit():
+        n = int(sid)
+        if 80 <= n <= 99:
+            return True
+        if 60 <= n <= 69:
+            return True
+        if n in (22, 23):
+            return True
+    return False
+
+
+def lcc_access_summary(sections: list[dict]) -> dict:
+    lcc_sections = [s for s in sections if is_lcc_accessible_section(s)]
+    open_lcc = sum(1 for s in lcc_sections if s.get("seats", {}).get("available", 0) > 0)
+    return {
+        "has_lcc_sections": bool(lcc_sections),
+        "lcc_section_count": len(lcc_sections),
+        "open_lcc_sections": open_lcc,
+    }
+
+
 def slot_display_label(slot: dict) -> str:
     if len(slot["group"]) > 1:
         options = " OR ".join(f"{course['code']}" for course in slot["group"])
@@ -234,6 +268,8 @@ def iter_course_slots(semesters: list[dict]) -> list[dict]:
 def term_status_badge(item: dict) -> str:
     if item.get("completed"):
         return "✅ Completed"
+    if item.get("likely_eligible") and item.get("delivery_caution"):
+        return "🟣 Delivery caution (LCC/Libby)"
     if item.get("likely_eligible"):
         return "🟢 Likely eligible now"
     if item.get("schedule_block"):
@@ -246,6 +282,8 @@ def term_status_badge(item: dict) -> str:
 def term_status_group(item: dict) -> str:
     if item.get("completed"):
         return "Completed"
+    if item.get("likely_eligible") and item.get("delivery_caution"):
+        return "Delivery cautions"
     if item.get("likely_eligible"):
         return "Likely eligible now"
     if item.get("schedule_block"):
@@ -258,10 +296,11 @@ def term_status_group(item: dict) -> str:
 def term_status_rank(item: dict) -> int:
     order = {
         "Likely eligible now": 0,
-        "Catalog prerequisite cautions": 1,
-        "Registration blocks noted": 2,
-        "Needs review": 3,
-        "Completed": 4,
+        "Delivery cautions": 1,
+        "Catalog prerequisite cautions": 2,
+        "Registration blocks noted": 3,
+        "Needs review": 4,
+        "Completed": 5,
     }
     return order.get(term_status_group(item), 99)
 

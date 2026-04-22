@@ -95,6 +95,7 @@ if st.button("Create Student", use_container_width=True, type="primary", key="mg
                 "math": {"taken": False, "level": ""},
                 "chemistry": {"taken": False, "level": ""},
             },
+            "campus_preference": "",
             "notes": new_notes.strip(),
         }
         progress["active_student_id"] = new_id

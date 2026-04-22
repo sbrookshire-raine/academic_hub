@@ -24,6 +24,7 @@ from planner_helpers import (
     merge_completed_course_codes,
     recommended_course_items,
     canonical_course_title,
+    lcc_access_summary,
     placement_equivalent_codes,
     slot_display_label,
     slot_is_completed,
@@ -101,6 +102,7 @@ student = student_records[selected_student_id]
 st.sidebar.markdown("### 📅 Term")
 default_term_idx = terms.index("Fall 2026") if "Fall 2026" in terms else 0
 selected_term = st.sidebar.selectbox("Viewing schedule for", terms, index=default_term_idx)
+campus_pref = student.get("campus_preference", "")
 
 # ── Resolve Program ──────────────────────────────────────────────────────────
 
@@ -314,6 +316,8 @@ with tab_now:
 
             open_count = sum(1 for s in sections if s.get("seats", {}).get("available", 0) > 0)
 
+            access = lcc_access_summary(sections)
+            delivery_caution = campus_pref == "LCC / Libby" and not access["has_lcc_sections"]
             available_items.append({
                 "slot": slot,
                 "course": course,
@@ -322,6 +326,7 @@ with tab_now:
                 "unmet_prior_slots": 0,
                 "schedule_block": schedule_gate["blocking"],
                 "catalog_prereq_block": bool(unmet_prereqs) and not schedule_gate["has_schedule_gate"],
+                "delivery_caution": delivery_caution,
                 "likely_eligible": likely_eligible,
                 "open_count": open_count,
                 "section_count": len(sections),
@@ -339,7 +344,10 @@ with tab_now:
                 open_count = item["open_count"]
 
                 course_title = canonical_course_title(item['course']['code'], item['course']['title'], course_requirements)
-                with st.expander(f"🟢 **{item['course']['code']}** — {course_title} ({item['course'].get('credits', '')}cr) · {open_count} open section(s)", expanded=True):
+                caution_marker = " 🟣" if item.get("delivery_caution") else ""
+                with st.expander(f"🟢{caution_marker} **{item['course']['code']}** — {course_title} ({item['course'].get('credits', '')}cr) · {open_count} open section(s)", expanded=True):
+                    if item.get("delivery_caution"):
+                        st.warning("LCC/Libby caution: no clearly local/remote-designated section this term (60s, 80s, 90s, D, 22, 23). You may need travel or instructor accommodation.")
                     # Show section table
                     rows = []
                     for sec in sections:
@@ -372,6 +380,8 @@ with tab_now:
                     reasons.append("has a sign-up restriction")
                 if item["catalog_prereq_block"]:
                     reasons.append("need to complete required classes first")
+                if item.get("delivery_caution"):
+                    reasons.append("no clearly Libby-friendly section this term")
 
                 st.markdown(
                     f"&nbsp;&nbsp;&nbsp;&nbsp;⏳ **{item['course']['code']}** — {canonical_course_title(item['course']['code'], item['course']['title'], course_requirements)} "
@@ -407,6 +417,8 @@ with tab_next:
             else:
                 likely_eligible = prereq_eval["satisfied"]
             open_count = sum(1 for s in sections if s.get("seats", {}).get("available", 0) > 0)
+            access = lcc_access_summary(sections)
+            delivery_caution = campus_pref == "LCC / Libby" and not access["has_lcc_sections"]
             all_items_for_rec.append({
                 "slot": slot,
                 "course": course,
@@ -415,6 +427,7 @@ with tab_next:
                 "unmet_prior_slots": 0,
                 "schedule_block": schedule_gate["blocking"],
                 "catalog_prereq_block": bool(unmet_prereqs) and not schedule_gate["has_schedule_gate"],
+                "delivery_caution": delivery_caution,
                 "likely_eligible": likely_eligible,
                 "open_count": open_count,
                 "section_count": len(sections),
@@ -443,10 +456,15 @@ with tab_next:
             if relevant_unlocks:
                 why_parts.append(f"lets you take {', '.join(relevant_unlocks[:3])} after")
 
+            if item.get("delivery_caution"):
+                why_parts.append("may require travel or instructor accommodation for Libby/LCC")
             why_text = " · ".join(why_parts) if why_parts else "You can sign up for this"
 
-            with st.expander(f"**{idx}. {code}** — {title} ({credits}cr)", expanded=(idx <= 3)):
+            caution_prefix = "🟣 " if item.get("delivery_caution") else ""
+            with st.expander(f"{caution_prefix}**{idx}. {code}** — {title} ({credits}cr)", expanded=(idx <= 3)):
                 st.caption(f"Why this one? {why_text}")
+                if item.get("delivery_caution"):
+                    st.warning("LCC/Libby caution: this class is offered, but no clearly local/remote-designated section is listed this term.")
                 st.markdown(f"Listed under: *{item['semester_label']}*")
 
                 sections = get_sections_for_course(code, selected_term, course_index)

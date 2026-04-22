@@ -33,6 +33,7 @@ from planner_helpers import (
     make_student_id,
     merge_completed_course_codes,
     recommended_course_items,
+    lcc_access_summary,
     slot_display_label,
     slot_is_completed,
     summarize_program_notes,
@@ -211,6 +212,7 @@ with st.sidebar.expander("➕ Add New Student", expanded=not bool(student_record
                     "math": {"taken": False, "level": ""},
                     "chemistry": {"taken": False, "level": ""},
                 },
+                "campus_preference": "",
                 "notes": "",
             }
             progress["active_student_id"] = new_id
@@ -525,6 +527,7 @@ with tab_term:
         program_notes = summarize_program_notes(program_site_index.get(program_poid))
 
         available_now = []
+        campus_pref = student.get("campus_preference", "")
         for slot_idx, slot in enumerate(program_slots):
             if slot_is_completed(slot, completed_slot_ids):
                 continue
@@ -542,11 +545,14 @@ with tab_term:
                     likely_eligible = not schedule_gate["blocking"]
                 else:
                     likely_eligible = prereq_eval["satisfied"]
+                access = lcc_access_summary(sections)
+                delivery_caution = campus_pref == "LCC / Libby" and not access["has_lcc_sections"]
                 available_now.append({
                     "slot": slot, "course": course, "semester_label": slot["semester_label"],
                     "completed": False, "unmet_prior_slots": 0,
                     "schedule_block": schedule_gate["blocking"],
                     "catalog_prereq_block": bool(unmet_prereqs) and not schedule_gate["has_schedule_gate"],
+                    "delivery_caution": delivery_caution,
                     "likely_eligible": likely_eligible,
                     "open_count": sum(1 for s in sections if s.get("seats", {}).get("available", 0) > 0),
                     "section_count": len(sections),
@@ -564,13 +570,15 @@ with tab_term:
 
         if available_now:
             available_now.sort(key=lambda item: (term_status_rank(item), item["course"]["code"]))
-            for group_name in ["Likely eligible now", "Catalog prerequisite cautions", "Registration blocks noted", "Needs review"]:
+            for group_name in ["Likely eligible now", "Delivery cautions", "Catalog prerequisite cautions", "Registration blocks noted", "Needs review"]:
                 group_items = [item for item in available_now if term_status_group(item) == group_name]
                 if not group_items:
                     continue
                 st.markdown(f"**{group_name}**")
                 for item in group_items:
                     st.caption(f"{term_status_badge(item)} · from {item['semester_label']}")
+                    if item.get("delivery_caution"):
+                        st.markdown("<span style='color:#d97706;'>⚠️ LCC/Libby caution: this term has no clearly local/remote-designated section (60s, 80s, 90s, D, 22, 23). Student may need travel or instructor accommodation.</span>", unsafe_allow_html=True)
                     render_course_schedule(
                         item["course"], selected_term, course_index,
                         completed=False, context_label=item["semester_label"],
@@ -868,6 +876,10 @@ with tab_profile:
             prog_idx = 0
 
         edited_prog_display = st.selectbox("Assigned program", options=display_names, index=prog_idx)
+        campus_options = ["", "LCC / Libby", "Main / Kalispell", "No Preference"]
+        current_campus = student.get("campus_preference", "")
+        campus_idx = campus_options.index(current_campus) if current_campus in campus_options else 0
+        edited_campus = st.selectbox("Campus/Delivery designation", options=campus_options, index=campus_idx)
         edited_notes = st.text_area("Advisor notes", value=student.get("notes", ""), height=150,
                                     help="Private notes about this student — goals, concerns, advising history, etc.")
 
@@ -875,6 +887,7 @@ with tab_profile:
             edited_prog = real_names[display_names.index(edited_prog_display)] if display_names else ""
             progress["students"][selected_sid]["name"] = edited_name.strip() or student["name"]
             progress["students"][selected_sid]["program_name"] = edited_prog
+            progress["students"][selected_sid]["campus_preference"] = edited_campus
             progress["students"][selected_sid]["notes"] = edited_notes
             save_progress(progress)
             st.rerun()

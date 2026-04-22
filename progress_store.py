@@ -24,6 +24,7 @@ def normalize_progress(progress: dict) -> dict:
             "math": {"taken": False, "level": ""},
             "chemistry": {"taken": False, "level": ""},
         })
+        student.setdefault("campus_preference", "")
         student.setdefault("notes", "")
     return progress
 
@@ -96,7 +97,7 @@ class SQLiteProgressStore:
             for row in conn.execute("SELECT program_name, slot_id, course_code FROM global_selected_or_courses ORDER BY program_name, slot_id"):
                 progress["selected_or_courses"].setdefault(row["program_name"], {})[row["slot_id"]] = row["course_code"]
 
-            for row in conn.execute("SELECT id, name, program_name, notes FROM students ORDER BY name"):
+            for row in conn.execute("SELECT id, name, program_name, notes, campus_preference FROM students ORDER BY name"):
                 progress["students"][row["id"]] = {
                     "id": row["id"],
                     "name": row["name"],
@@ -110,6 +111,7 @@ class SQLiteProgressStore:
                         "math": {"taken": False, "level": ""},
                         "chemistry": {"taken": False, "level": ""},
                     },
+                    "campus_preference": row["campus_preference"] or "",
                     "notes": row["notes"],
                 }
 
@@ -187,6 +189,7 @@ class SQLiteProgressStore:
                         student.get("name", student_id),
                         student.get("program_name", ""),
                         student.get("notes", ""),
+                        student.get("campus_preference", ""),
                     )
                 )
                 slot_terms = student.get("completed_slot_terms", {})
@@ -206,7 +209,7 @@ class SQLiteProgressStore:
 
             if student_rows:
                 conn.executemany(
-                    "INSERT INTO students(id, name, program_name, notes) VALUES (?, ?, ?, ?)",
+                    "INSERT INTO students(id, name, program_name, notes, campus_preference) VALUES (?, ?, ?, ?, ?)",
                     student_rows,
                 )
             if completed_rows:
