@@ -19,6 +19,11 @@ def normalize_progress(progress: dict) -> dict:
         student.setdefault("completed_slot_terms", {})
         student.setdefault("manual_completed_courses", {})
         student.setdefault("selected_or_courses", {})
+        student.setdefault("placement_scores", {
+            "writing": {"taken": False, "level": ""},
+            "math": {"taken": False, "level": ""},
+            "chemistry": {"taken": False, "level": ""},
+        })
         student.setdefault("notes", "")
     return progress
 
@@ -100,6 +105,11 @@ class SQLiteProgressStore:
                     "completed_slot_terms": {},
                     "manual_completed_courses": {},
                     "selected_or_courses": {},
+                    "placement_scores": {
+                        "writing": {"taken": False, "level": ""},
+                        "math": {"taken": False, "level": ""},
+                        "chemistry": {"taken": False, "level": ""},
+                    },
                     "notes": row["notes"],
                 }
 
@@ -120,6 +130,14 @@ class SQLiteProgressStore:
                 if student:
                     student["manual_completed_courses"][row["course_code"]] = row["completion_term"]
 
+            for row in conn.execute("SELECT student_id, test_type, taken, level FROM student_placement_scores ORDER BY student_id, test_type"):
+                student = progress["students"].get(row["student_id"])
+                if student:
+                    student.setdefault("placement_scores", {})[row["test_type"]] = {
+                        "taken": bool(row["taken"]),
+                        "level": row["level"] or "",
+                    }
+
         return normalize_progress(progress)
 
     def save(self, progress: dict) -> None:
@@ -133,6 +151,7 @@ class SQLiteProgressStore:
             conn.execute("DELETE FROM student_completed_slots")
             conn.execute("DELETE FROM student_selected_or_courses")
             conn.execute("DELETE FROM student_manual_completed_courses")
+            conn.execute("DELETE FROM student_placement_scores")
             conn.execute("DELETE FROM students")
 
             conn.execute(
@@ -160,6 +179,7 @@ class SQLiteProgressStore:
             completed_rows = []
             student_or_rows = []
             manual_rows = []
+            placement_rows = []
             for student_id, student in progress.get("students", {}).items():
                 student_rows.append(
                     (
@@ -176,6 +196,13 @@ class SQLiteProgressStore:
                     student_or_rows.append((student_id, slot_id, course_code))
                 for course_code, completion_term in student.get("manual_completed_courses", {}).items():
                     manual_rows.append((student_id, course_code, completion_term))
+                for test_type, test_data in student.get("placement_scores", {}).items():
+                    placement_rows.append((
+                        student_id,
+                        test_type,
+                        1 if test_data.get("taken") else 0,
+                        test_data.get("level", ""),
+                    ))
 
             if student_rows:
                 conn.executemany(
@@ -196,6 +223,11 @@ class SQLiteProgressStore:
                 conn.executemany(
                     "INSERT INTO student_manual_completed_courses(student_id, course_code, completion_term) VALUES (?, ?, ?)",
                     manual_rows,
+                )
+            if placement_rows:
+                conn.executemany(
+                    "INSERT INTO student_placement_scores(student_id, test_type, taken, level) VALUES (?, ?, ?, ?)",
+                    placement_rows,
                 )
 
             self._write_audit_entries(conn, previous_progress, progress)

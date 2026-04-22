@@ -68,9 +68,6 @@ def render_course_schedule(
     )
     alerts = dedupe_alerts(alerts)
     reasons = list(schedule_gate.get("reasons", []))
-    if unmet_prior_slots > 0 and not context_label.lower().startswith("prereq"):
-        reasons.append("earlier program requirements still unfinished")
-
     requirements = course_requirements.get(course["code"], {})
     if not schedule_gate.get("has_schedule_gate"):
         unmet_catalog_prereqs = [code for code in requirements.get("prerequisite_codes", []) if code not in completed_course_codes]

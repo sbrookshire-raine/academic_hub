@@ -14,11 +14,13 @@ import pandas as pd
 import streamlit as st
 
 from course_ui import render_course_schedule
-from eligibility import analyze_schedule_registration_notes
+from eligibility import analyze_schedule_registration_notes, evaluate_catalog_prerequisites
 from planner_helpers import (
     build_completed_course_codes,
     build_program_site_index,
     build_unlock_map,
+    placement_equivalent_codes,
+    PLACEMENT_OPTIONS,
     count_completed_credits,
     count_program_credits,
     count_remaining_slots,
@@ -36,6 +38,7 @@ from planner_helpers import (
     summarize_program_notes,
     sync_completed_slot_terms,
     completion_rows,
+    canonical_course_title,
     manual_course_rows,
     term_status_badge,
     term_status_group,
@@ -122,6 +125,11 @@ def compute_student_progress(student: dict) -> dict:
             "total_slots": 0, "completed_slot_count": 0, "remaining_slots": 0,
             "progress_pct": 0, "program_slots": [], "completed_slot_ids": set(),
             "completed_course_codes": set(), "saved_or_choices": {},
+            "effective_completed_course_codes": set(), "placement_scores": {
+                "writing": {"taken": False, "level": ""},
+                "math": {"taken": False, "level": ""},
+                "chemistry": {"taken": False, "level": ""},
+            },
             "manual_completed_courses": {}, "completed_labels": [],
             "completion_options": [], "completion_lookup": {},
         }
@@ -130,26 +138,32 @@ def compute_student_progress(student: dict) -> dict:
     for slot_idx, slot in enumerate(program_slots):
         slot["slot_id"] = f"{program['name']}::{slot_idx}::{slot['semester_label']}::{slot['group_idx']}"
 
-    completion_options = [slot_display_label(slot) for slot in program_slots if any(not c.get("is_elective") for c in slot["group"])]
+    completion_options = [slot_display_label(slot) for slot in program_slots]
     completion_lookup = {
         slot_display_label(slot): slot["slot_id"]
-        for slot in program_slots if any(not c.get("is_elective") for c in slot["group"])
+        for slot in program_slots
     }
 
     completed_labels = [label for label in student.get("completed_slots", []) if label in completion_options]
     completed_slot_ids = {completion_lookup[label] for label in completed_labels}
     saved_or_choices = student.get("selected_or_courses", {})
     manual_completed_courses = student.get("manual_completed_courses", {})
+    placement_scores = student.get("placement_scores", {
+        "writing": {"taken": False, "level": ""},
+        "math": {"taken": False, "level": ""},
+        "chemistry": {"taken": False, "level": ""},
+    })
 
     slot_codes = build_completed_course_codes(program_slots, completed_slot_ids, saved_or_choices)
     completed_course_codes = merge_completed_course_codes(slot_codes, manual_completed_courses)
+    effective_completed_course_codes = set(completed_course_codes) | placement_equivalent_codes(placement_scores)
     completed_credits = count_completed_credits(program_slots, completed_slot_ids, saved_or_choices)
     remaining = count_remaining_slots(program_slots, completed_slot_ids)
 
     catalog_credits = program.get("total_credits", "")
     computed = count_program_credits(program["semesters"])
     total_credits = int(catalog_credits) if str(catalog_credits).isdigit() else computed
-    total_slots = len([s for s in program_slots if any(not c.get("is_elective") for c in s["group"])])
+    total_slots = len(program_slots)
     completed_slot_count = len(completed_slot_ids)
     pct = int((completed_slot_count / total_slots) * 100) if total_slots > 0 else 0
 
@@ -160,6 +174,8 @@ def compute_student_progress(student: dict) -> dict:
         "progress_pct": pct, "program_slots": program_slots,
         "completed_slot_ids": completed_slot_ids,
         "completed_course_codes": completed_course_codes,
+        "effective_completed_course_codes": effective_completed_course_codes,
+        "placement_scores": placement_scores,
         "saved_or_choices": saved_or_choices,
         "manual_completed_courses": manual_completed_courses,
         "completed_labels": completed_labels,
@@ -189,7 +205,13 @@ with st.sidebar.expander("➕ Add New Student", expanded=not bool(student_record
             progress.setdefault("students", {})[new_id] = {
                 "id": new_id, "name": cleaned, "program_name": new_prog,
                 "completed_slots": [], "completed_slot_terms": {},
-                "manual_completed_courses": {}, "selected_or_courses": {}, "notes": "",
+                "manual_completed_courses": {}, "selected_or_courses": {},
+                "placement_scores": {
+                    "writing": {"taken": False, "level": ""},
+                    "math": {"taken": False, "level": ""},
+                    "chemistry": {"taken": False, "level": ""},
+                },
+                "notes": "",
             }
             progress["active_student_id"] = new_id
             save_progress(progress)
@@ -332,6 +354,7 @@ with tab_pathway:
         program_slots = sp["program_slots"]
         completed_slot_ids = sp["completed_slot_ids"]
         completed_course_codes = sp["completed_course_codes"]
+        effective_completed_course_codes = sp["effective_completed_course_codes"]
         saved_or_choices = sp["saved_or_choices"]
         program_course_codes = {
             c["code"] for slot in program_slots for c in slot["group"] if not c.get("is_elective")
@@ -353,9 +376,9 @@ with tab_pathway:
             if sem_done == sem_total and sem_total > 0:
                 sem_icon = "✅"
             elif sem_done > 0:
-                sem_icon = "🔵"
+                sem_icon = "🟦"
             else:
-                sem_icon = "⬜"
+                sem_icon = "⬛"
 
             sem_header = f"{sem_icon} **{sem_label}**"
             if sem_credits:
@@ -390,11 +413,15 @@ with tab_pathway:
                         course = group[0]
 
                     if course.get("is_elective"):
-                        st.markdown(f"&nbsp;&nbsp;📘 Elective — {course['title']} ({course.get('credits', '')}cr)")
+                        elective_text = f"Elective — {course['title']} ({course.get('credits', '')}cr)"
+                        if is_done:
+                            st.markdown(f"&nbsp;&nbsp;✅ ~~{elective_text}~~ · Completed")
+                        else:
+                            st.markdown(f"&nbsp;&nbsp;🟣 {elective_text} · Not marked complete")
                         continue
 
                     code = course["code"]
-                    title = course["title"]
+                    title = canonical_course_title(code, course["title"], course_requirements)
                     credits = course.get("credits", "")
 
                     # Status
@@ -414,8 +441,8 @@ with tab_pathway:
                         all_secs = get_sections_for_course(code, "", course_index)
                         offered = sorted(set(s["term"] for s in all_secs)) if all_secs else []
                         if offered:
-                            icon = "🟡"
-                            status_text = f"In: {', '.join(offered)}"
+                            icon = "🔴"
+                            status_text = f"Not offered in {selected_term} (offered in: {', '.join(offered)})"
                         else:
                             icon = "⚪"
                             status_text = "Not scheduled"
@@ -425,11 +452,23 @@ with tab_pathway:
                     reqs = course_requirements.get(code, {})
                     prereq_codes = reqs.get("prerequisite_codes", [])
                     if prereq_codes:
-                        unmet = [c for c in prereq_codes if c not in completed_course_codes]
+                        prereq_eval = evaluate_catalog_prerequisites(reqs, effective_completed_course_codes)
+                        unmet = prereq_eval["unmet_codes"]
                         if unmet and not is_done:
                             prereq_info = f" · ⚠️ needs {', '.join(unmet)}"
                         elif not unmet and not is_done:
-                            prereq_info = " · ✓ prereqs met"
+                            placement_only = [c for c in prereq_codes if c not in completed_course_codes and c in effective_completed_course_codes]
+                            if placement_only:
+                                prereq_info = " · ✓ prereqs met by placement"
+                            else:
+                                prereq_info = " · ✓ prereqs met"
+
+                    # Keep pathway language aligned with term eligibility logic
+                    schedule_gate = analyze_schedule_registration_notes(code, sections, effective_completed_course_codes)
+                    caution_info = ""
+                    if not is_done:
+                        if schedule_gate["blocking"]:
+                            caution_info = " · ⛔ registration block noted"
 
                     # Unlock info
                     unlocks = unlock_map.get(code, [])
@@ -438,10 +477,16 @@ with tab_pathway:
                     if relevant_unlocks and not is_done:
                         unlock_info = f" · unlocks {', '.join(relevant_unlocks[:3])}"
 
-                    st.markdown(
-                        f"&nbsp;&nbsp;{icon} **{code}** — {title} ({credits}cr) · "
-                        f"{status_text}{prereq_info}{unlock_info}"
-                    )
+                    if is_done:
+                        st.markdown(
+                            f"&nbsp;&nbsp;{icon} ~~**{code}** — {title} ({credits}cr)~~ · "
+                            f"{status_text}{prereq_info}{unlock_info}"
+                        )
+                    else:
+                        st.markdown(
+                            f"&nbsp;&nbsp;{icon} **{code}** — {title} ({credits}cr) · "
+                            f"{status_text}{prereq_info}{unlock_info}{caution_info}"
+                        )
 
                     # Show section details for available courses (collapsible)
                     if sections and not is_done:
@@ -471,6 +516,7 @@ with tab_term:
         program_slots = sp["program_slots"]
         completed_slot_ids = sp["completed_slot_ids"]
         completed_course_codes = sp["completed_course_codes"]
+        effective_completed_course_codes = sp["effective_completed_course_codes"]
         saved_or_choices = sp["saved_or_choices"]
         program_course_codes = {
             c["code"] for slot in program_slots for c in slot["group"] if not c.get("is_elective")
@@ -482,10 +528,6 @@ with tab_term:
         for slot_idx, slot in enumerate(program_slots):
             if slot_is_completed(slot, completed_slot_ids):
                 continue
-            unmet_prior = sum(
-                1 for prev in program_slots[:slot_idx]
-                if any(not c.get("is_elective") for c in prev["group"]) and not slot_is_completed(prev, completed_slot_ids)
-            )
             for course in slot["group"]:
                 if course.get("is_elective"):
                     continue
@@ -493,15 +535,16 @@ with tab_term:
                 if not sections:
                     continue
                 requirements = course_requirements.get(course["code"], {})
-                unmet_prereqs = [c for c in requirements.get("prerequisite_codes", []) if c not in completed_course_codes]
-                schedule_gate = analyze_schedule_registration_notes(course["code"], sections, completed_course_codes)
+                prereq_eval = evaluate_catalog_prerequisites(requirements, effective_completed_course_codes)
+                unmet_prereqs = prereq_eval["unmet_codes"]
+                schedule_gate = analyze_schedule_registration_notes(course["code"], sections, effective_completed_course_codes)
                 if schedule_gate["has_schedule_gate"]:
-                    likely_eligible = unmet_prior == 0 and not schedule_gate["blocking"]
+                    likely_eligible = not schedule_gate["blocking"]
                 else:
-                    likely_eligible = unmet_prior == 0 and not unmet_prereqs
+                    likely_eligible = prereq_eval["satisfied"]
                 available_now.append({
                     "slot": slot, "course": course, "semester_label": slot["semester_label"],
-                    "completed": False, "unmet_prior_slots": unmet_prior,
+                    "completed": False, "unmet_prior_slots": 0,
                     "schedule_block": schedule_gate["blocking"],
                     "catalog_prereq_block": bool(unmet_prereqs) and not schedule_gate["has_schedule_gate"],
                     "likely_eligible": likely_eligible,
@@ -521,7 +564,7 @@ with tab_term:
 
         if available_now:
             available_now.sort(key=lambda item: (term_status_rank(item), item["course"]["code"]))
-            for group_name in ["Likely eligible now", "Earlier program work unfinished", "Catalog prerequisite cautions", "Registration blocks noted", "Needs review"]:
+            for group_name in ["Likely eligible now", "Catalog prerequisite cautions", "Registration blocks noted", "Needs review"]:
                 group_items = [item for item in available_now if term_status_group(item) == group_name]
                 if not group_items:
                     continue
@@ -533,7 +576,7 @@ with tab_term:
                         completed=False, context_label=item["semester_label"],
                         unmet_prior_slots=item["unmet_prior_slots"],
                         program_notes=program_notes, course_requirements=course_requirements,
-                        completed_course_codes=completed_course_codes,
+                        completed_course_codes=effective_completed_course_codes,
                         unlock_map=unlock_map, program_course_codes=program_course_codes,
                     )
         else:
@@ -554,6 +597,8 @@ with tab_courses:
         completion_options = sp["completion_options"]
         completion_lookup = sp["completion_lookup"]
         completed_course_codes = sp["completed_course_codes"]
+        effective_completed_course_codes = sp["effective_completed_course_codes"]
+        placement_scores = sp["placement_scores"]
         manual_completed_courses = sp["manual_completed_courses"]
 
         st.subheader("Mark What's Done")
@@ -573,7 +618,7 @@ with tab_courses:
 
             # Count completed in this semester
             sem_done = sum(1 for s in sem_slots if slot_display_label(s) in completed_labels)
-            sem_total = len([s for s in sem_slots if any(not c.get("is_elective") for c in s["group"])])
+            sem_total = len(sem_slots)
             sem_icon = "✅" if sem_done == sem_total and sem_total > 0 else ("🔵" if sem_done > 0 else "⬜")
 
             with st.expander(f"{sem_icon} {sem_label} — {sem_done}/{sem_total} done", expanded=(sem_done > 0 and sem_done < sem_total)):
@@ -619,8 +664,50 @@ with tab_courses:
             save_progress(progress)
             st.rerun()
 
+        st.markdown("---")
+        st.subheader("Placement Tests")
+        st.caption("Placement can satisfy eligibility logic but does not award course credits.")
+
+        def _render_placement_row(test_key: str, label: str, options: list[str]):
+            current = placement_scores.get(test_key, {"taken": False, "level": ""})
+            row_col1, row_col2 = st.columns([1, 4])
+            with row_col1:
+                taken = st.checkbox(label, value=bool(current.get("taken")), key=f"placement_taken_{test_key}")
+            with row_col2:
+                try:
+                    idx = options.index(current.get("level", ""))
+                except ValueError:
+                    idx = 0
+                level = st.selectbox(
+                    f"{label} level",
+                    options=options,
+                    index=idx,
+                    key=f"placement_level_{test_key}",
+                    disabled=not taken,
+                    label_visibility="collapsed",
+                )
+
+            new_level = level if taken else ""
+            return {"taken": taken, "level": new_level}
+
+        placement_draft = {
+            "writing": _render_placement_row("writing", "Writing", PLACEMENT_OPTIONS["writing"]),
+            "math": _render_placement_row("math", "Math", PLACEMENT_OPTIONS["math"]),
+            "chemistry": _render_placement_row("chemistry", "Chemistry", PLACEMENT_OPTIONS["chemistry"]),
+        }
+
+        if st.button("Save Placement Scores", key="save_placement_scores", use_container_width=True):
+            if placement_draft != placement_scores:
+                progress["students"][selected_sid]["placement_scores"] = placement_draft
+                save_progress(progress)
+                st.rerun()
+
+        placement_only = sorted(c for c in effective_completed_course_codes if c not in completed_course_codes)
+        if placement_only:
+            st.caption("Placement-equivalent eligibility codes: " + ", ".join(placement_only))
+
         # Cross-program prereq display
-        if completed_course_codes:
+        if effective_completed_course_codes:
             st.markdown("---")
             st.subheader("🔗 What These Unlock in Other Programs")
             st.caption("Completed classes that satisfy prerequisites in programs beyond this student's current one.")
@@ -642,7 +729,7 @@ with tab_courses:
                         other_code = course_entry.get("code", "")
                         reqs = course_requirements.get(other_code, {})
                         prereq_codes = reqs.get("prerequisite_codes", [])
-                        satisfied = [p for p in prereq_codes if p in completed_course_codes]
+                        satisfied = [p for p in prereq_codes if p in effective_completed_course_codes]
                         if satisfied:
                             cross_program_unlocks.setdefault(other_prog["name"], []).append({
                                 "course": other_code,
@@ -688,9 +775,51 @@ with tab_courses:
         st.subheader("Transfer & Other Classes")
         st.caption("Add classes taken elsewhere (transfer, AP, dual enrollment, etc.). These count toward prerequisites even if they're not in the program.")
 
+        # Non-program prereqs that still matter for this student's remaining courses
+        program_codes = {
+            c["code"] for slot in program_slots for c in slot["group"]
+            if not c.get("is_elective") and c.get("code") != "ELECTIVE"
+        }
+        needed_external_prereqs = set()
+        for slot in program_slots:
+            if slot_is_completed(slot, completed_slot_ids):
+                continue
+            for c in slot["group"]:
+                if c.get("is_elective"):
+                    continue
+                reqs = course_requirements.get(c["code"], {})
+                for prereq in reqs.get("prerequisite_codes", []):
+                    if prereq not in program_codes:
+                        needed_external_prereqs.add(prereq)
+
+        if needed_external_prereqs:
+            st.markdown("#### External Prereqs Not In Program Map")
+            st.caption("These classes may not be degree requirements, but still satisfy prereq options for required classes.")
+            st.markdown("- " + "\n- ".join(sorted(needed_external_prereqs)))
+
+            add_prereq = st.multiselect(
+                "Quick add external prereq completions",
+                options=sorted(needed_external_prereqs),
+                default=[p for p in sorted(needed_external_prereqs) if p in manual_completed_courses],
+                key="adv_external_prereqs",
+            )
+            if set(add_prereq) != {k for k in manual_completed_courses.keys() if k in needed_external_prereqs}:
+                for prereq in needed_external_prereqs:
+                    if prereq in add_prereq and prereq not in manual_completed_courses:
+                        progress["students"][selected_sid].setdefault("manual_completed_courses", {})[prereq] = "Transfer/Other"
+                    elif prereq not in add_prereq and prereq in manual_completed_courses and manual_completed_courses.get(prereq) == "Transfer/Other":
+                        progress["students"][selected_sid]["manual_completed_courses"].pop(prereq, None)
+                save_progress(progress)
+                st.rerun()
+
+        st.markdown("#### Add Transfer Course")
+
         add_col, term_col, btn_col = st.columns([2, 1, 1])
         with add_col:
-            manual_code = st.selectbox("Course code", options=sorted(course_index.keys()), key="adv_manual_code")
+            manual_options = sorted(course_index.keys())
+            manual_display = [code.replace("_", " ") for code in manual_options]
+            manual_pick = st.selectbox("Course code", options=manual_display, key="adv_manual_code")
+            manual_code = manual_pick.replace(" ", "_")
         with term_col:
             manual_term = st.selectbox("When completed", options=[""] + terms, key="adv_manual_term")
         with btn_col:

@@ -9,6 +9,22 @@ from pathlib import Path
 
 import streamlit as st
 
+
+def _launched_via_streamlit() -> bool:
+    """Return True when running inside Streamlit runtime."""
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+
+        return get_script_run_ctx() is not None
+    except Exception:
+        return False
+
+
+# If user runs `python app.py`, re-launch correctly through Streamlit.
+if __name__ == "__main__" and not _launched_via_streamlit():
+    subprocess.run([sys.executable, "-m", "streamlit", "run", str(Path(__file__))], check=False)
+    raise SystemExit(0)
+
 # Auto-seed demo data on first run (e.g., fresh Streamlit Cloud deploy)
 _db_path = Path(__file__).parent / "data" / "user_progress.db"
 if not _db_path.exists():

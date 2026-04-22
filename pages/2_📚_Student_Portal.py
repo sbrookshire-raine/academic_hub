@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit as st
 
 from course_ui import render_course_schedule
-from eligibility import analyze_schedule_registration_notes
+from eligibility import analyze_schedule_registration_notes, evaluate_catalog_prerequisites
 from planner_helpers import (
     build_completed_course_codes,
     build_unlock_map,
@@ -23,6 +23,8 @@ from planner_helpers import (
     iter_course_slots,
     merge_completed_course_codes,
     recommended_course_items,
+    canonical_course_title,
+    placement_equivalent_codes,
     slot_display_label,
     slot_is_completed,
     sync_completed_slot_terms,
@@ -116,20 +118,25 @@ program_slots = iter_course_slots(program["semesters"])
 for slot_idx, slot in enumerate(program_slots):
     slot["slot_id"] = f"{program['name']}::{slot_idx}::{slot['semester_label']}::{slot['group_idx']}"
 
-completion_options = [slot_display_label(slot) for slot in program_slots if any(not c.get("is_elective") for c in slot["group"])]
+completion_options = [slot_display_label(slot) for slot in program_slots]
 completion_lookup = {
     slot_display_label(slot): slot["slot_id"]
     for slot in program_slots
-    if any(not c.get("is_elective") for c in slot["group"])
 }
 
 completed_labels = [label for label in student.get("completed_slots", []) if label in completion_options]
 completed_slot_ids = {completion_lookup[label] for label in completed_labels}
 manual_completed_courses = student.get("manual_completed_courses", {})
+placement_scores = student.get("placement_scores", {
+    "writing": {"taken": False, "level": ""},
+    "math": {"taken": False, "level": ""},
+    "chemistry": {"taken": False, "level": ""},
+})
 saved_or_choices = student.get("selected_or_courses", {})
 
 slot_completed_codes = build_completed_course_codes(program_slots, completed_slot_ids, saved_or_choices)
 completed_course_codes = merge_completed_course_codes(slot_completed_codes, manual_completed_courses)
+effective_completed_course_codes = set(completed_course_codes) | placement_equivalent_codes(placement_scores)
 completed_credits = count_completed_credits(program_slots, completed_slot_ids, saved_or_choices)
 remaining_slots = count_remaining_slots(program_slots, completed_slot_ids)
 
@@ -137,7 +144,7 @@ catalog_credits = program.get("total_credits", "")
 computed_credits = count_program_credits(program["semesters"])
 total_credits = int(catalog_credits) if str(catalog_credits).isdigit() else computed_credits
 remaining_credits = max(total_credits - completed_credits, 0)
-total_slots = len([s for s in program_slots if any(not c.get("is_elective") for c in s["group"])])
+total_slots = len(program_slots)
 completed_slot_count = len(completed_slot_ids)
 progress_pct = int((completed_slot_count / total_slots) * 100) if total_slots > 0 else 0
 
@@ -233,11 +240,14 @@ with tab_path:
 
                 is_done = slot_is_completed(slot, completed_slot_ids)
                 code = course["code"]
-                title = course["title"]
+                title = canonical_course_title(code, course["title"], course_requirements)
                 credits = course.get("credits", "")
 
                 if course.get("is_elective"):
-                    st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;📘 Elective — {title} ({credits}cr)")
+                    if is_done:
+                        st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;✅ ~~Elective — {title} ({credits}cr)~~")
+                    else:
+                        st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;🟣 Elective — {title} ({credits}cr)")
                     continue
 
                 sections = get_sections_for_course(code, selected_term, course_index)
@@ -257,8 +267,8 @@ with tab_path:
                     all_secs = get_sections_for_course(code, "", course_index)
                     offered_terms = sorted(set(s["term"] for s in all_secs)) if all_secs else []
                     if offered_terms:
-                        icon = "🟡"
-                        detail = f"Available in: {', '.join(offered_terms)}"
+                        icon = "🔴"
+                        detail = f"Not offered in {selected_term} (available in: {', '.join(offered_terms)})"
                     else:
                         icon = "⚪"
                         detail = "Not currently scheduled"
@@ -269,7 +279,10 @@ with tab_path:
                     if alts:
                         or_note = f" *(or {', '.join(alts)})*"
 
-                st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;{icon} **{code}** — {title} ({credits}cr) · {detail}{or_note}")
+                if is_done:
+                    st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;{icon} ~~**{code}** — {title} ({credits}cr)~~ · {detail}{or_note}")
+                else:
+                    st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;{icon} **{code}** — {title} ({credits}cr) · {detail}{or_note}")
 
 # ── Tab: This Term ───────────────────────────────────────────────────────────
 
@@ -282,11 +295,6 @@ with tab_now:
         if slot_is_completed(slot, completed_slot_ids):
             continue
 
-        unmet_prior = sum(
-            1 for prev in program_slots[:slot_idx]
-            if any(not c.get("is_elective") for c in prev["group"]) and not slot_is_completed(prev, completed_slot_ids)
-        )
-
         for course in slot["group"]:
             if course.get("is_elective"):
                 continue
@@ -295,13 +303,14 @@ with tab_now:
                 continue
 
             requirements = course_requirements.get(course["code"], {})
-            unmet_prereqs = [c for c in requirements.get("prerequisite_codes", []) if c not in completed_course_codes]
-            schedule_gate = analyze_schedule_registration_notes(course["code"], sections, completed_course_codes)
+            prereq_eval = evaluate_catalog_prerequisites(requirements, effective_completed_course_codes)
+            unmet_prereqs = prereq_eval["unmet_codes"]
+            schedule_gate = analyze_schedule_registration_notes(course["code"], sections, effective_completed_course_codes)
 
             if schedule_gate["has_schedule_gate"]:
-                likely_eligible = unmet_prior == 0 and not schedule_gate["blocking"]
+                likely_eligible = not schedule_gate["blocking"]
             else:
-                likely_eligible = unmet_prior == 0 and not unmet_prereqs
+                likely_eligible = prereq_eval["satisfied"]
 
             open_count = sum(1 for s in sections if s.get("seats", {}).get("available", 0) > 0)
 
@@ -310,7 +319,7 @@ with tab_now:
                 "course": course,
                 "semester_label": slot["semester_label"],
                 "completed": False,
-                "unmet_prior_slots": unmet_prior,
+                "unmet_prior_slots": 0,
                 "schedule_block": schedule_gate["blocking"],
                 "catalog_prereq_block": bool(unmet_prereqs) and not schedule_gate["has_schedule_gate"],
                 "likely_eligible": likely_eligible,
@@ -329,7 +338,8 @@ with tab_now:
                 sections = get_sections_for_course(item["course"]["code"], selected_term, course_index)
                 open_count = item["open_count"]
 
-                with st.expander(f"🟢 **{item['course']['code']}** — {item['course']['title']} ({item['course'].get('credits', '')}cr) · {open_count} open section(s)", expanded=True):
+                course_title = canonical_course_title(item['course']['code'], item['course']['title'], course_requirements)
+                with st.expander(f"🟢 **{item['course']['code']}** — {course_title} ({item['course'].get('credits', '')}cr) · {open_count} open section(s)", expanded=True):
                     # Show section table
                     rows = []
                     for sec in sections:
@@ -349,7 +359,7 @@ with tab_now:
                     # What does this course unlock?
                     unlocks = unlock_map.get(item["course"]["code"], [])
                     program_codes = {c["code"] for s in program_slots for c in s["group"] if not c.get("is_elective")}
-                    relevant_unlocks = [u for u in unlocks if u in program_codes and u not in completed_course_codes]
+                    relevant_unlocks = [u for u in unlocks if u in program_codes and u not in effective_completed_course_codes]
                     if relevant_unlocks:
                         st.caption(f"Finishing this class lets you take: {', '.join(relevant_unlocks[:5])}")
 
@@ -358,15 +368,13 @@ with tab_now:
             st.caption("These are offered this term, but you need to finish other classes first.")
             for item in sorted(not_ready, key=lambda i: i["course"]["code"]):
                 reasons = []
-                if item["unmet_prior_slots"] > 0:
-                    reasons.append(f"finish {item['unmet_prior_slots']} earlier class(es) first")
                 if item["schedule_block"]:
                     reasons.append("has a sign-up restriction")
                 if item["catalog_prereq_block"]:
                     reasons.append("need to complete required classes first")
 
                 st.markdown(
-                    f"&nbsp;&nbsp;&nbsp;&nbsp;⏳ **{item['course']['code']}** — {item['course']['title']} "
+                    f"&nbsp;&nbsp;&nbsp;&nbsp;⏳ **{item['course']['code']}** — {canonical_course_title(item['course']['code'], item['course']['title'], course_requirements)} "
                     f"({item['course'].get('credits', '')}cr) · {', '.join(reasons)}"
                 )
     else:
@@ -384,11 +392,6 @@ with tab_next:
         if slot_is_completed(slot, completed_slot_ids):
             continue
 
-        unmet_prior = sum(
-            1 for prev in program_slots[:slot_idx]
-            if any(not c.get("is_elective") for c in prev["group"]) and not slot_is_completed(prev, completed_slot_ids)
-        )
-
         for course in slot["group"]:
             if course.get("is_elective"):
                 continue
@@ -396,19 +399,20 @@ with tab_next:
             if not sections:
                 continue
             requirements = course_requirements.get(course["code"], {})
-            unmet_prereqs = [c for c in requirements.get("prerequisite_codes", []) if c not in completed_course_codes]
-            schedule_gate = analyze_schedule_registration_notes(course["code"], sections, completed_course_codes)
+            prereq_eval = evaluate_catalog_prerequisites(requirements, effective_completed_course_codes)
+            unmet_prereqs = prereq_eval["unmet_codes"]
+            schedule_gate = analyze_schedule_registration_notes(course["code"], sections, effective_completed_course_codes)
             if schedule_gate["has_schedule_gate"]:
-                likely_eligible = unmet_prior == 0 and not schedule_gate["blocking"]
+                likely_eligible = not schedule_gate["blocking"]
             else:
-                likely_eligible = unmet_prior == 0 and not unmet_prereqs
+                likely_eligible = prereq_eval["satisfied"]
             open_count = sum(1 for s in sections if s.get("seats", {}).get("available", 0) > 0)
             all_items_for_rec.append({
                 "slot": slot,
                 "course": course,
                 "semester_label": slot["semester_label"],
                 "completed": False,
-                "unmet_prior_slots": unmet_prior,
+                "unmet_prior_slots": 0,
                 "schedule_block": schedule_gate["blocking"],
                 "catalog_prereq_block": bool(unmet_prereqs) and not schedule_gate["has_schedule_gate"],
                 "likely_eligible": likely_eligible,
@@ -422,7 +426,7 @@ with tab_next:
         for idx, item in enumerate(recommended[:6], 1):
             course = item["course"]
             code = course["code"]
-            title = course["title"]
+            title = canonical_course_title(code, course["title"], course_requirements)
             credits = course.get("credits", "")
             open_ct = item["open_count"]
             total_sec = item["section_count"]
@@ -435,7 +439,7 @@ with tab_next:
                 why_parts.append(f"{open_ct} open section(s)")
             unlocks = unlock_map.get(code, [])
             program_codes = {c["code"] for s in program_slots for c in s["group"] if not c.get("is_elective")}
-            relevant_unlocks = [u for u in unlocks if u in program_codes and u not in completed_course_codes]
+            relevant_unlocks = [u for u in unlocks if u in program_codes and u not in effective_completed_course_codes]
             if relevant_unlocks:
                 why_parts.append(f"lets you take {', '.join(relevant_unlocks[:3])} after")
 

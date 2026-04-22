@@ -3,6 +3,83 @@ from __future__ import annotations
 import re
 
 
+def evaluate_catalog_prerequisites(requirements: dict, completed_course_codes: set[str]) -> dict:
+    """
+    Evaluate catalog prerequisites with basic AND/OR parsing.
+
+    Returns:
+      {
+        "satisfied": bool,
+        "unmet_codes": list[str],
+        "rule": str,  # and | or | mixed
+      }
+    """
+    prereq_codes = requirements.get("prerequisite_codes", []) or []
+    if not prereq_codes:
+        return {"satisfied": True, "unmet_codes": [], "rule": "none"}
+
+    lines = [str(line).strip().lower() for line in (requirements.get("prerequisite_lines", []) or [])[:25]]
+
+    # Build token stream from the prerequisite block, preserving code order and and/or markers.
+    tokens: list[str] = []
+    code_map = {code.lower(): code for code in prereq_codes}
+    for line in lines:
+        if line in ("and", "or"):
+            tokens.append(line)
+            continue
+        if line in code_map:
+            tokens.append(code_map[line])
+
+    has_and = "and" in tokens or "and" in lines
+    has_or = "or" in tokens or "or" in lines
+
+    # Fallback strategy if scrape noise prevented a clean token stream.
+    if not any(tok not in ("and", "or") for tok in tokens):
+        if has_or and not has_and:
+            satisfied = any(code in completed_course_codes for code in prereq_codes)
+            unmet = [] if satisfied else prereq_codes[:]
+            return {"satisfied": satisfied, "unmet_codes": unmet, "rule": "or"}
+        satisfied = all(code in completed_course_codes for code in prereq_codes)
+        unmet = [code for code in prereq_codes if code not in completed_course_codes]
+        return {"satisfied": satisfied, "unmet_codes": unmet, "rule": "and"}
+
+    # Parse as OR-of-AND-groups ("A and B or C" => (A and B) or C)
+    groups: list[list[str]] = []
+    current_group: list[str] = []
+    for tok in tokens:
+        if tok == "or":
+            if current_group:
+                groups.append(current_group)
+                current_group = []
+            continue
+        if tok == "and":
+            continue
+        current_group.append(tok)
+    if current_group:
+        groups.append(current_group)
+
+    # If parsing collapsed badly, recover with simple all-codes AND.
+    if not groups:
+        satisfied = all(code in completed_course_codes for code in prereq_codes)
+        unmet = [code for code in prereq_codes if code not in completed_course_codes]
+        return {"satisfied": satisfied, "unmet_codes": unmet, "rule": "and"}
+
+    missing_by_group = []
+    for group in groups:
+        unique_group = list(dict.fromkeys(group))
+        missing = [code for code in unique_group if code not in completed_course_codes]
+        missing_by_group.append(missing)
+
+    satisfied = any(len(missing) == 0 for missing in missing_by_group)
+    if satisfied:
+        unmet = []
+    else:
+        unmet = min(missing_by_group, key=len) if missing_by_group else prereq_codes[:]
+
+    rule = "mixed" if has_and and has_or else ("or" if has_or else "and")
+    return {"satisfied": satisfied, "unmet_codes": unmet, "rule": rule}
+
+
 def analyze_schedule_registration_notes(
     course_code: str,
     sections: list[dict],
@@ -163,7 +240,8 @@ def collect_course_alerts(
     prereq_codes = requirements.get("prerequisite_codes", [])
     coreq_codes = requirements.get("corequisite_codes", [])
 
-    unmet_prereqs = [code for code in prereq_codes if code not in completed_course_codes]
+    prereq_eval = evaluate_catalog_prerequisites(requirements, completed_course_codes)
+    unmet_prereqs = prereq_eval["unmet_codes"]
     unmet_coreqs = [code for code in coreq_codes if code not in completed_course_codes and code != course["code"]]
 
     if unmet_prereqs and not schedule_note_result["has_schedule_gate"]:

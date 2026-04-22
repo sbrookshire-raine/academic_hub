@@ -3,6 +3,54 @@ from __future__ import annotations
 import re
 
 
+PLACEMENT_OPTIONS = {
+    "writing": ["", "College Writing", "Dual Writing"],
+    "math": ["", "M065 Lower", "M065", "M90", "M94", "M95", "M105", "M121", "M140"],
+    "chemistry": ["", "Under CHMY 105", "CHMY 105", "CHMY 121"],
+}
+
+
+def placement_equivalent_codes(placement_scores: dict | None) -> set[str]:
+    """Return prereq-equivalent course codes implied by placement (no earned credits)."""
+    placement_scores = placement_scores or {}
+    equivalents: set[str] = set()
+
+    writing = placement_scores.get("writing", {})
+    if writing.get("taken"):
+        level = (writing.get("level") or "").strip()
+        if level == "College Writing":
+            equivalents.update({"WRIT 101", "WRIT 101W"})
+        elif level == "Dual Writing":
+            equivalents.update({"WRIT 100"})
+
+    math = placement_scores.get("math", {})
+    if math.get("taken"):
+        level = (math.get("level") or "").strip()
+        math_map = {
+            "M065 Lower": set(),
+            "M065": {"M 065~", "M 065"},
+            "M90": {"M 090~", "M 090", "M 065~", "M 065"},
+            "M94": {"M 094~", "M 094", "M 065~", "M 065"},
+            "M95": {"M 095", "M 090~", "M 090", "M 065~", "M 065"},
+            "M105": {"M 105", "M 094~", "M 094", "M 065~", "M 065"},
+            "M121": {"M 121", "M 095", "M 090~", "M 090", "M 065~", "M 065"},
+            "M140": {"M 140", "M 105", "M 094~", "M 094", "M 065~", "M 065"},
+        }
+        equivalents.update(math_map.get(level, set()))
+
+    chemistry = placement_scores.get("chemistry", {})
+    if chemistry.get("taken"):
+        level = (chemistry.get("level") or "").strip()
+        chem_map = {
+            "Under CHMY 105": set(),
+            "CHMY 105": {"CHMY 105"},
+            "CHMY 121": {"CHMY 121", "CHMY 105"},
+        }
+        equivalents.update(chem_map.get(level, set()))
+
+    return equivalents
+
+
 def make_student_id(name: str, existing_ids: set[str]) -> str:
     base = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "student"
     candidate = base
@@ -27,6 +75,15 @@ def sync_completed_slot_terms(student: dict, completed_slots: list[str]) -> dict
 
 def course_option_label(course: dict) -> str:
     return f"{course['code']} - {course['title']} ({course.get('credits', '')}cr)"
+
+
+def canonical_course_title(course_code: str, fallback_title: str, course_requirements: dict) -> str:
+    """Prefer course title from requirement catalog when available."""
+    req = course_requirements.get(course_code, {})
+    req_title = req.get("title", "")
+    if req_title and " - " in req_title:
+        return req_title.split(" - ", 1)[1].strip()
+    return fallback_title
 
 
 def slot_display_label(slot: dict) -> str:
@@ -141,16 +198,13 @@ def count_completed_credits(program_slots: list[dict], completed_slot_ids: set[s
         if not slot_is_completed(slot, completed_slot_ids):
             continue
         course = get_selected_course_for_slot(slot, saved_or_choices)
-        if course and not course.get("is_elective"):
+        if course:
             total += int(course.get("credits", 0) or 0)
     return total
 
 
 def count_remaining_slots(program_slots: list[dict], completed_slot_ids: set[str]) -> int:
-    return sum(
-        1 for slot in program_slots
-        if any(not course.get("is_elective") for course in slot["group"]) and not slot_is_completed(slot, completed_slot_ids)
-    )
+    return sum(1 for slot in program_slots if not slot_is_completed(slot, completed_slot_ids))
 
 
 def build_completed_course_codes(program_slots: list[dict], completed_slot_ids: set[str], saved_or_choices: dict) -> set[str]:
@@ -159,7 +213,7 @@ def build_completed_course_codes(program_slots: list[dict], completed_slot_ids: 
         if not slot_is_completed(slot, completed_slot_ids):
             continue
         course = get_selected_course_for_slot(slot, saved_or_choices)
-        if course and not course.get("is_elective"):
+        if course and not course.get("is_elective") and course.get("code") != "ELECTIVE":
             completed_codes.add(course["code"])
     return completed_codes
 
@@ -184,8 +238,6 @@ def term_status_badge(item: dict) -> str:
         return "🟢 Likely eligible now"
     if item.get("schedule_block"):
         return "🟠 Registration block noted"
-    if item.get("unmet_prior_slots", 0) > 0:
-        return "🟡 Earlier program work unfinished"
     if item.get("catalog_prereq_block"):
         return "🟡 Catalog prerequisites incomplete"
     return "⚪ Needs review"
@@ -200,19 +252,16 @@ def term_status_group(item: dict) -> str:
         return "Registration blocks noted"
     if item.get("catalog_prereq_block"):
         return "Catalog prerequisite cautions"
-    if item.get("unmet_prior_slots", 0) > 0:
-        return "Earlier program work unfinished"
     return "Needs review"
 
 
 def term_status_rank(item: dict) -> int:
     order = {
         "Likely eligible now": 0,
-        "Earlier program work unfinished": 1,
-        "Catalog prerequisite cautions": 2,
-        "Registration blocks noted": 3,
-        "Needs review": 4,
-        "Completed": 5,
+        "Catalog prerequisite cautions": 1,
+        "Registration blocks noted": 2,
+        "Needs review": 3,
+        "Completed": 4,
     }
     return order.get(term_status_group(item), 99)
 
